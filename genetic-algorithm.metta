@@ -1,8 +1,7 @@
 ;; Parameters
-(= (POPULATION_SIZE) 10)
+(= (POPULATION_SIZE) 7)
 (= (INDIVIDUAL_LENGTH) 8)
 (= (MAX_GENERATIONS) 10)
-(= (CROSSOVER_POINT) 4)
 
 
 ;; Joins two lists (tuples) together.
@@ -66,14 +65,16 @@
 
 
 
-;; Builds the next generation by creating count new children.
-(= (build-next-generation $rng $parent1 $parent2 $count $accumulator)
-  ;; Base Case: If count is 0, we have created enough children.
-  (if (== $count 0)
+;; Creates 7 children by iteratingthrough all possible crossover points from 1 to 7.
+(= (build-next-generation $parent1 $parent2 $crossover-point $accumulator)
+  ;; Base Case: If the crossover point reaches the end of the individual's length (8),
+  ;; we have created all 7 children. Stop and return the accumulated list.
+  (if (== $crossover-point (INDIVIDUAL_LENGTH))
     $accumulator
-    ;; Recursive Step, create one new child and add it to the accumulator.
-    (let ($child (concatinate (sublist $parent1 0 (CROSSOVER_POINT)) (sublist $parent2 (CROSSOVER_POINT) (INDIVIDUAL_LENGTH))))
-      (build-next-generation $rng $parent1 $parent2 (dec $count) (append-to-list $accumulator $child)))))
+    ;; Recursive Step: Create one new child using the current crossover point.
+    (let ($child (concatinate (sublist $parent1 0 $crossover-point) (sublist $parent2 $crossover-point (INDIVIDUAL_LENGTH))))
+      ;; Call self to create the next child, using the next crossover point.
+      (build-next-generation $parent1 $parent2 (inc $crossover-point) (append-to-list $accumulator $child)))))
 
 ;; Main generational loop
 (= (genetic-programming $rng $current-generation $max-generations $population)
@@ -97,7 +98,7 @@
                      $parent1 (cdr-atom (car-atom $sorted-evaluated-population)))
                      $parent2 (cdr-atom (car-atom (cdr-atom $sorted-evaluated-population))))
                 (let (;; Build the new population of children.
-                       $next-generation (build-next-generation $rng $parent1 $parent2 (POPULATION_SIZE) ()))
+                       $next-generation (build-next-generation $parent1 $parent2 1 ()))
                   ;; Call self to start the next generation.
                   (genetic-programming $rng (inc $current-generation) $max-generations $next-generation)))))))))
 

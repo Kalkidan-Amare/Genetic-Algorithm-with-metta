@@ -44,16 +44,16 @@
 
 
 ;; Creates one random individual
-(= (create-individual-recursive $rng $length $accumulator)
+(= (create-individual $rng $length $accumulator)
   (if (== $length 0)
     $accumulator
-    (create-individual-recursive $rng (dec $length) (append-to-list $accumulator (random-int $rng 0 1)))))
+    (create-individual $rng (dec $length) (append-to-list $accumulator (random-int $rng 0 1)))))
 
 ;; Creates the starting population using the accumulator pattern.
-(= (create-population-recursive $rng $size $length $accumulator)
+(= (create-population $rng $size $length $accumulator)
   (if (== $size 0)
     $accumulator
-    (create-population-recursive $rng (dec $size) $length (append-to-list $accumulator (create-individual-recursive $rng $length ())))))
+    (create-population $rng (dec $size) $length (append-to-list $accumulator (create-individual $rng $length ())))))
 
 ;; Calculates the fitness score.
 (= (calculate-fitness $individual)
@@ -106,7 +106,7 @@
 ;; Execution
 
 ;; Create the initial population
-!(bind! $initial-population (create-population-recursive &rng (POPULATION_SIZE) (INDIVIDUAL_LENGTH) ()))
+!(bind! $initial-population (create-population &rng (POPULATION_SIZE) (INDIVIDUAL_LENGTH) ()))
 !(println! "Initial Population: " $initial-population)
 
 ;; Starting the recursive Genetic Programming run.

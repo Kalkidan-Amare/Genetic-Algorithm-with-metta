@@ -43,16 +43,35 @@
 
 
 ;; Creates one random individual
-(= (create-individual $rng $length $accumulator)
+(= (create-individual $length $accumulator)
   (if (== $length 0)
     $accumulator
-    (create-individual $rng (dec $length) (append-to-list $accumulator (random-int $rng 0 1)))))
+
+   (let* (
+    ( $rand (random-int &rng 0 2) )
+    ( $len (- $length 1) )
+    ( $newlist (cons-atom $rand $accumulator) )
+   )
+   
+   (create-individual $len $newlist)))
+   )
 
 ;; Creates the starting population using the accumulator pattern.
-(= (create-population $rng $size $length $accumulator)
-  (if (== $size 0)
+(= (create-population $size $length_p $accumulator)
+  (if (< $size 1)
     $accumulator
-    (create-population $rng (dec $size) $length (append-to-list $accumulator (create-individual $rng $length ())))))
+
+    (let* (
+    ( $new_size (- $size 1) )
+    ($argument  (create-individual $length_p ()))
+    ($new_list (cons-atom  $argument $accumulator))
+   )
+    
+    (create-population $new_size $length_p $new_list)
+    )
+)
+    
+)
 
 ;; Calculates the fitness score.
 (= (calculate-fitness $individual)
@@ -107,10 +126,11 @@
 ;; Execution
 
 ;; Create the initial population
-!(bind! $initial-population (create-population &rng (POPULATION_SIZE) (INDIVIDUAL_LENGTH) ()))
-!(println! "Initial Population: " $initial-population)
-
+;!(bind! &initial-population (create-population (POPULATION_SIZE) (INDIVIDUAL_LENGTH) ()))
+;!(println! "Initial Population: " &initial-population)
+!(create-population (POPULATION_SIZE) (INDIVIDUAL_LENGTH) ())
+!(create-individual 8 ())
 ;; Starting the recursive Genetic Programming run.
-!(bind! $final-sorted-population (genetic-programming &rng 1 (MAX_GENERATIONS) $initial-population))
+;!(bind! &final-sorted-population (genetic-programming &rng 1 (MAX_GENERATIONS) $initial-population))
 
-!(println! "Final Best Individual: " (car-atom $final-sorted-population))
+;!(println! "Final Best Individual: " (car-atom &final-sorted-population))

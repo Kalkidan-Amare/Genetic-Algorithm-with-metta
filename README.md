@@ -1,8 +1,4 @@
-Of course. Here is a descriptive README file for the project, tailored to your precise specifications. It focuses on the problem, the algorithm, and the implementation details, omitting setup instructions and adopting a direct, human-written tone.
-
----
-
-# Minimalist Genetic Algorithm in MeTTa
+# Simple Genetic Algorithm in MeTTa
 
 This project is an implementation of a simple Genetic Algorithm, developed as a task for the iCog Labs training program. It is written in a pure, foundational subset of the MeTTa language to solve the classic "Maximize Ones" problem.
 
